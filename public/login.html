@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Websockets and Socket.io creating server</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.2.min.js"></script> -->
+
+<script type="text/javascript">
+	var socket = io.connect("/");
+	socket.on("message", function(message) {
+		console.log("Message from the server1 arrived")
+		message = JSON.parse(message);
+		console.log(message);
+		$('#content').append('<div >' + message.data + '</div>');
+	});
+
+	function jsoncall() {
+		var username = $('#username').val();
+		var password = $('#password').val();
+		var ip = $('#ip').val();
+		var loginTime = Math.round(+new Date() / 1000);
+
+		var data = {
+			"username" : username,
+			"password" : password,
+			"ip" : ip,
+			"loginTime" : loginTime
+		};
+
+ 		var dataString = JSON.stringify(data); 
+
+		jQuery.ajax({
+			type : 'POST',
+			url : 'http://127.0.0.1:5000',
+			data : dataString,
+			dataType : 'json',
+			headers : {
+				'Content-Type': 'application/json'
+			},
+			success : function(str) {
+				alert(str);
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				// TODO: need to show error message form the Server
+				alert("Error while configuring..");
+			}
+		});
+	}
+</script>
+</head>
+<body>
+	<form action="">
+
+		<div id="message">
+			<input type="text" id="username" placeholder="Username" /><br /> <input
+				type="text" id="password" placeholder="password" /><br /> <input
+				type="text" id="ip" placeholder="ip-address" /> <br />
+		</div>
+		<!--text form to send data to the server-->
+		<input id="submit" type="button" value="Send data to Server"
+			onclick="jsoncall()">
+		<div id="content"></div>
+	</form>
+</body>
+</html>
